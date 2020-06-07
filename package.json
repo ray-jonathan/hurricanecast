@@ -1,15 +1,31 @@
 {
-  "name": "hurricanecast",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1"
-  }
+	"name": "hurricanecast",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon --ignore sessions index.js",
+		"db:create": "createdb earbuds-app",
+		"db:init": "psql -f schema.sql earbuds-app && psql -f seed.sql earbuds-app",
+		"db:destroy": "dropdb earbuds-app",
+		"db:reset": "npm run db:destroy; npm run db:create && npm run db:init",
+		"merged": "npm i && npm run db:reset && npm run dev"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^0.19.2",
+		"dotenv": "^8.2.0",
+		"escape-html": "^1.0.3",
+		"express": "^4.17.1",
+		"express-es6-template-engine": "^2.2.2",
+		"helmet": "^3.22.0",
+		"moment": "^2.26.0",
+		"nodemailer": "^6.4.8",
+		"pg-promise": "^10.5.6"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.4"
+	}
 }
