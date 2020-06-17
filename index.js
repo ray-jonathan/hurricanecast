@@ -37,10 +37,10 @@ app.get('/', (req, res) =>
 app.post('/send-forecast', (req, res) => {
 	console.log(req.body);
 	try {
-		const { subject, body, disclaimer, donations } = req.body;
+		const { subject, forecast, discussion, disclaimer, donations } = req.body;
 		const body_text =
-			body +
-			'\n' +
+			(forecast.length > 1 ? `\nFORECAST: \n` + forecast + '\n' : '') +
+			(discussion.length > 1 ? `\nDISCUSSION: \n` + discussion + '\n' : '') +
 			(disclaimer === 'on'
 				? `\nDISCLAIMER: \nThe Florida State University required that I not use any FSU equipment to send out these forecasts. To comply, I have purchased my own computer for making and sending these forecasts. I have been touched by the many offers of encouragement and support that I have received. I am deeply indebted to the Secretary and the staff of the Department of Children and Families who value these forecasts for the citizens of Florida. I acknowledge that these forecasts are mine alone, by my own effort and initiative. I only try to provide the best possible forecasts for the community, and the State of Florida and now, surrounding states at no cost to those who receive it.` +
 				  '\n'
