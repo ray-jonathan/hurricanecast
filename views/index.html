@@ -1,5 +1,36 @@
 ${header}
-
-<h1>congrats!</h1>
+<form class="forecast-form" method="POST" action="/send-forecast" id="Forecast">
+	<div>
+		<label class="block" for="EmailSubject">Subject Line:</label>
+		<input id="EmailSubject" type="text" name="subject" placeholder="Subject" />
+	</div>
+	<div>
+		<label class="block" for="EmailBody">Email Body:</label>
+		<textarea
+			id="EmailBody"
+			name="body"
+			rows="20"
+			cols="75"
+			placeholder="Forecast goes here..."
+		></textarea>
+	</div>
+	<div>
+		<p>INCLUDE:</p>
+		<label for="FSUDislamer">FSU Disclaimer:</label>
+		<input type="checkbox" id="FSUDislamer" checked />
+		<br />
+		<label for="Donations">Donations Text:</label>
+		<input type="checkbox" id="Donations" checked />
+		<br />
+		<label for="Subscription">Subscription Information:</label>
+		<input type="checkbox" id="Subscription" checked disabled />
+		<text style="display: inline; color: rgba(0, 0, 0, 0.5);"
+			>(Always enabled)</text
+		>
+	</div>
+	<div>
+		<button type="submit" id="SendForecast">Send Forecast</button>
+	</div>
+</form>
 
 ${footer}
