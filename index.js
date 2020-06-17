@@ -14,12 +14,20 @@ app.engine('html', es6Renderer);
 app.set('views', 'views');
 app.set('view engine', 'html');
 
-// Routers
-const exampleRouter = require('./routes/example');
+// // Routers
+// const exampleRouter = require('./routes/example');
 
-// Routes
-app.get('/example', exampleRouter);
-app.post('/example', exampleRouter);
+// // Routes
+// app.get('/example', exampleRouter);
+// app.post('/example', exampleRouter);
+app.get('/', (req, res) =>
+	res.render('index.html', {
+		partials: {
+			header: './partial-header',
+			footer: './partial-footer',
+		},
+	}),
+);
 
 // Failsafe
 app.all('*', (req, res) => {
