@@ -1,4 +1,4 @@
-create table users
+create table subscribers
 (
   id serial primary key,
   email varchar (200),
