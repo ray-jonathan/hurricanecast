@@ -35,7 +35,7 @@ async function addForecast(req, res, next) {
 async function sendForecast(req, res) {
 	try {
 		const recipients = await Subscriber.getAllValidatedSubscribers();
-		console.log(res.addedForecast);
+		console.log(recipients);
 		const { subject, body } = res.addedForecast;
 		const { wasSuccessful } = await sendEmail({
 			subject,
