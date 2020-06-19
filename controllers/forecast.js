@@ -23,7 +23,7 @@ async function addForecast(req, res, next) {
 			: '') +
 		'\nSUBSCRIPTIONS: \nIf you wish to unsubscribe from these forecasts and all future correspondence, please LORUM IPSUM LORUM IPSUM LORUM IPSUM';
 	const addedForecast = await Forecast.add({ subject, body: body_text });
-	if (!addForecast.id) {
+	if (!addedForecast.id) {
 		console.log('Failed to add forecast to table.');
 		res.status(403);
 		res.send('controllers/addForecast Failure');
