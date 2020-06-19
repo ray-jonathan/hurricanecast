@@ -15,7 +15,7 @@ async function addForecast(req, res, next) {
 		forecast.length > 1 ? '\nFORECAST:\n' + forecast : ''
 	} 
 		
-${discussion.length > 1 ? '\nDiscussion:\n' + discussion : ''}
+${discussion.length > 1 ? '\nDISCUSSION:\n' + discussion : ''}
 
 ${
 	disclaimer === 'on'
