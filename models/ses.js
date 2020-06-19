@@ -20,7 +20,7 @@ async function sendEmail({
 					Source: SENDER,
 					ReplyToAddresses: [REPLY_TO],
 					Destination: {
-						ToAddresses: email,
+						ToAddresses: [email],
 					},
 					Message: {
 						Subject: {
