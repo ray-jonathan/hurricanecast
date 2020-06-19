@@ -25,7 +25,8 @@ async function addForecast(req, res, next) {
 	const addedForecast = await Forecast.add({ subject, body: body_text });
 	if (!addForecast.id) {
 		console.log('Failed to add forecast to table.');
-		res.sendStatus(403);
+		res.status(403);
+		res.send('controllers/addForecast Failure');
 	}
 	res.addedForecast = addedForecast;
 	next();
@@ -34,9 +35,11 @@ async function addForecast(req, res, next) {
 async function sendForecast(req, res) {
 	try {
 		const recipients = await Subscriber.getAllValidatedSubscribers();
+		console.log(res.addedForecast);
+		const { subject, body } = res.addedForecast;
 		const { wasSuccessful } = await sendEmail({
 			subject,
-			body_text,
+			body,
 			recipients,
 		});
 		res.sendStatus(wasSuccessful === true ? 204 : 503);
