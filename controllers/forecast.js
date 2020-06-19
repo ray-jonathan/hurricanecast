@@ -34,12 +34,12 @@ async function addForecast(req, res, next) {
 async function sendForecast(req, res) {
 	try {
 		const recipients = await Subscriber.getAllValidatedSubscribers();
-		const { wasSuccessful = false } = await sendEmail({
+		const { wasSuccessful } = await sendEmail({
 			subject,
 			body_text,
 			recipients,
 		});
-		res.sendStatus(wasSuccessful ? 204 : 503);
+		res.sendStatus(wasSuccessful === true ? 204 : 503);
 	} catch (err) {
 		console.log(err);
 		res.sendStatus(503);

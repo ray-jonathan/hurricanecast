@@ -15,12 +15,12 @@ async function sendEmail({
 		const charset = 'UTF-8';
 
 		const emailResults = await Promise.allSettled(
-			recipients.map((recipient) => {
+			recipients.map(({ email }) => {
 				var params = {
 					Source: SENDER,
 					ReplyToAddresses: [REPLY_TO],
 					Destination: {
-						ToAddresses: recipient,
+						ToAddresses: email,
 					},
 					Message: {
 						Subject: {
@@ -63,7 +63,7 @@ async function sendEmail({
 					},
 					Body: {
 						Text: {
-							Data: `There was an error sending a forecase to the following email address: ${recipients[i]}. \nPlease reach out to the subscriber or manually remove them from the list to prevent further emails indicating errors.`,
+							Data: `There was an error sending a forecase to the following email address: ${recipients[i].email}. \nPlease reach out to the subscriber or manually remove them from the list to prevent further emails indicating errors.`,
 							Charset: charset,
 						},
 					},
