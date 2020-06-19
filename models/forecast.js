@@ -19,7 +19,7 @@ class Forecast {
 				`insert into forecasts
         (subject, body, timestamp)
     values
-        ($1, $2, $3) returning *`,
+        ($1, E$2, $3) returning *`,
 				[subject, body, timestamp],
 			);
 			return new Forecast(id, forecastSubject, forecastBody, forecastTimestamp);
