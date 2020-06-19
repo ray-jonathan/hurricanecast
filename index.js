@@ -9,6 +9,12 @@ app.use(helmet());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
+//Logging
+app.use((req, res, next) => {
+	console.log(req.headers);
+	next();
+});
+
 // View Engine Setup
 app.engine('html', es6Renderer);
 app.set('views', 'views');
