@@ -5,6 +5,21 @@ ${header}
 		<input id="EmailSubject" type="text" name="subject" placeholder="Subject" />
 	</div>
 	<div>
+		<label for="specialControl">Include Preforecast Text?</label>
+		<input type="checkbox" id="specialControl" />
+		<br />
+		<div id="specialWrapper" style="display: none;">
+			<label class="block" for="special">Special:</label>
+			<textarea
+				id="special"
+				name="special"
+				rows="15"
+				cols="75"
+				placeholder="Special text goes here..."
+			></textarea>
+		</div>
+	</div>
+	<div>
 		<label class="block" for="ForecastBody">Forecast:</label>
 		<textarea
 			id="ForecastBody"
@@ -49,4 +64,13 @@ ${header}
 	</div>
 </form>
 
+<script>
+	document
+		.getElementById('specialControl')
+		.addEventListener('change', ({ target }) => {
+			document.getElementById('specialWrapper').style.display = target.checked
+				? 'block'
+				: 'none';
+		});
+</script>
 ${footer}
