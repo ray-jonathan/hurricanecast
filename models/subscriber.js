@@ -61,8 +61,7 @@ class Subscriber {
 				`select * from subscribers where validated = true`,
 			);
 			return subscriberArray.map(
-				({ id, subscriberEmail, validated }) =>
-					new Subscriber(id, subscriberEmail, validated),
+				({ id, email, validated }) => new Subscriber(id, email, validated),
 			);
 		} catch (err) {
 			console.log(err);
