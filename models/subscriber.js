@@ -58,7 +58,7 @@ class Subscriber {
 	static async getAllValidatedSubscribers() {
 		try {
 			const subscriberArray = await db.any(
-				`select * from subscriber where validated = true`,
+				`select * from subscribers where validated = true`,
 			);
 			return subscriberArray.map(
 				({ id, subscriberEmail, validated }) =>
@@ -72,7 +72,7 @@ class Subscriber {
 
 	static async deleteAllUnvalidatedSubscribers() {
 		try {
-			return db.none(`delete from forecasts where validated = false`);
+			return db.none(`delete from subscribers where validated = false`);
 		} catch (err) {
 			console.log(err);
 			return undefined;
@@ -86,7 +86,7 @@ class Subscriber {
 				email: subscriberEmail,
 				validated: subscriberValiation,
 			} = await db.one(
-				`select * from subscriber order by id desc limit 1 where validated = false`,
+				`select * from subscribers order by id desc limit 1 where validated = false`,
 			);
 			return new Subscriber(id, subscriberEmail, subscriberValiation);
 		} catch (err) {
