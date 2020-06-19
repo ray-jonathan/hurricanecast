@@ -50,7 +50,7 @@ async function sendForecast(req, res) {
 		const { subject, body } = res.addedForecast;
 		const { wasSuccessful } = await sendEmail({
 			subject,
-			body,
+			body_text: body,
 			recipients,
 		});
 		res.sendStatus(wasSuccessful === true ? 204 : 503);

@@ -32,6 +32,10 @@ async function sendEmail({
 								Data: body_text,
 								Charset: charset,
 							},
+							// Html: {
+							// 	Data: body_text,
+							// 	Charset: charset,
+							// },
 						},
 					},
 				};
