@@ -34,7 +34,7 @@ class Subscriber {
 				email: subscriberEmail,
 				validated,
 			} = await db.one(
-				`update only subscribers set where email = $1 returning *`,
+				`update only subscribers set validated = True where email = $1 returning *`,
 				[email],
 			);
 			return new Subscriber(id, subscriberEmail, validated);

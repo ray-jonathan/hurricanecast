@@ -71,6 +71,8 @@ ${header}
 			document.getElementById('specialWrapper').style.display = target.checked
 				? 'block'
 				: 'none';
+			if (!target.checked)
+				document.querySelector('#specialWrapper > textarea').value = '';
 		});
 </script>
 ${footer}
