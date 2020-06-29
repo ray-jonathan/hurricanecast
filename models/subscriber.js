@@ -8,6 +8,7 @@ class Subscriber {
 	}
 
 	static async add({ email = '', validated = false }) {
+		if (!email) return new Subscriber();
 		try {
 			const {
 				id,
@@ -28,6 +29,7 @@ class Subscriber {
 	}
 
 	static async validateSusbscriberByEmail(email = '') {
+		if (!email) return new Subscriber();
 		try {
 			const {
 				id,
@@ -45,6 +47,7 @@ class Subscriber {
 	}
 
 	static async deleteSusbscriberByEmail(email = '') {
+		if (!email) return new Subscriber();
 		try {
 			return db.one(`delete from subscribers where email = $1 returning true`, [
 				email,

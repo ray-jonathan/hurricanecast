@@ -19,9 +19,11 @@ async function addSubscriber(req, res) {
 			recipients: [newSubscriber.email],
 		};
 		const { wasSuccessful = false } = await sendEmail(params);
+		if (wasSuccessful) res.sendStatus(201);
+		res.sendStatus(403);
 	} catch (err) {
 		console.log(err);
-		res.sendStatus(503);
+		res.sendStatus(403);
 	}
 }
 
@@ -42,7 +44,18 @@ async function validateSubscriber(req, res) {
 	res.redirect('https://hurricanehunt.com');
 }
 
-async function removeSubscriber(req, res) {}
+async function removeSubscriber(req, res) {
+	try {
+		const { email } = req.body;
+		const whateverComesBackFromDBNone = await Subscriber.deleteSusbscriberByEmail(
+			email,
+		);
+		res.sendStatus(204);
+	} catch (err) {
+		console.log(err, 'The offending email was:', req.body.email);
+		res.sendStatus(403);
+	}
+}
 
 module.exports = {
 	addSubscriber,
