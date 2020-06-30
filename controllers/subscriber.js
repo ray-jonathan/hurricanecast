@@ -7,9 +7,9 @@ async function addSubscriber(req, res) {
 		const { email } = req.body;
 		console.log(email);
 		const newSubscriber = await Subscriber.add({
-			email: decodeURI(escapeHtml(email)),
+			email: decodeURIComponent(escapeHtml(email)),
 		});
-		if (!newSubscriber.id) res.sendStatus(503);
+		// if (!newSubscriber.id) res.sendStatus(503);
 		const params = {
 			subject: 'Confirm Your Subscription with HurricaneCast',
 			body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
@@ -23,7 +23,7 @@ async function addSubscriber(req, res) {
 		};
 		const { wasSuccessful = false } = await sendEmail(params);
 		if (wasSuccessful) res.sendStatus(201);
-		res.sendStatus(403);
+		else res.sendStatus(403);
 	} catch (err) {
 		console.log(err);
 		res.sendStatus(403);
