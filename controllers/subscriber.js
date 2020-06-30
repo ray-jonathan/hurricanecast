@@ -49,7 +49,7 @@ async function removeSubscriber(req, res) {
 	try {
 		const { email } = req.body;
 		const whateverComesBackFromDBNone = await Subscriber.deleteSusbscriberByEmail(
-			email,
+			decodeURIComponent(email),
 		);
 		res.sendStatus(204);
 	} catch (err) {
