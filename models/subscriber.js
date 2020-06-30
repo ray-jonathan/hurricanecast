@@ -29,8 +29,8 @@ class Subscriber {
 		}
 	}
 
-	static async validateSusbscriberByEmail(email = '') {
-		if (!email) return new Subscriber();
+	static async validateSusbscriberByEmail(emailAddress = '') {
+		if (!emailAddress) return new Subscriber();
 		try {
 			const {
 				id,
@@ -38,9 +38,11 @@ class Subscriber {
 				validated,
 			} = await db.one(
 				`update only subscribers set validated = True where email = $1 returning *`,
-				[email],
+				[emailAddress],
 			);
-			return new Subscriber(id, subscriberEmail, validated);
+			const validSubscriber = new Subscriber(id, subscriberEmail, validated);
+			console.log(validSubscriber);
+			return validSubscriber;
 		} catch (err) {
 			console.log(err);
 			return new Subscriber();

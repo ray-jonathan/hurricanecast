@@ -42,7 +42,7 @@ async function validateSubscriber(req, res) {
 		decodeURIComponent(email),
 	);
 	if (!validSubscriber.id) res.sendStatus(503);
-	else res.redirect('https://hurricanehunt.com');
+	else res.redirect('http://hurricanecast.com');
 }
 
 async function removeSubscriber(req, res) {
