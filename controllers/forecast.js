@@ -27,12 +27,12 @@ The Florida State University required that I not use any FSU equipment to send o
 ${
 	donations === 'on'
 		? `DONATIONS: 
-If you want to help support these efforts, there is information how you can help financially support this effort. I have moved to a new website and blog which may be reached at URL  http://www.hurricanecast.com   In this website you can find the forecast, as well as a blog of expanded interests of mine dealing with weather and climate and hurricanes, and an opportunity for you to comment as well.  There is also an opportunity for you to contribute to defraying the increasing costs of maintaining this service, if and only if you want to.  This must always be a not for profit public service and free as long as I have anything to do with it. But I have had offers of help in the past and it is increasingly difficult for me to underwrite all the cost. You can also just mail a check to 7030 Heritage Ridge Road, Tallahassee, FL 32312. But I want to stress that there is no requirement at all, it is only to help support this effort. This I do for you as best I can, no strings attached.' 
+If you want to help support these efforts, there is information how you can help financially support this effort. I have moved to a new website and blog which may be reached at URL  https://www.hurricanecast.com   In this website you can find the forecast, as well as a blog of expanded interests of mine dealing with weather and climate and hurricanes, and an opportunity for you to comment as well.  There is also an opportunity for you to contribute to defraying the increasing costs of maintaining this service, if and only if you want to.  This must always be a not for profit public service and free as long as I have anything to do with it. But I have had offers of help in the past and it is increasingly difficult for me to underwrite all the cost. You can also just mail a check to 7030 Heritage Ridge Road, Tallahassee, FL 32312. But I want to stress that there is no requirement at all, it is only to help support this effort. This I do for you as best I can, no strings attached.' 
 `
 		: ''
 }
 SUBSCRIPTIONS: 
-If you wish to unsubscribe from these forecasts and all future correspondence, please LORUM IPSUM LORUM IPSUM LORUM IPSUM
+If you wish to unsubscribe from these forecasts and all future correspondence, please visit https://hurricanecast.com/subscribe and supply your email address to the unsubscription form.
 `;
 	const addedForecast = await Forecast.add({ subject, body: body_text });
 	if (!addedForecast.id) {
