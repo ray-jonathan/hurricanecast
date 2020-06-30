@@ -5,24 +5,21 @@ const sendEmail = require('../models/ses');
 async function addSubscriber(req, res) {
 	try {
 		const { email } = req.body;
-		console.log(email);
 		const newSubscriber = await Subscriber.add({
 			email: decodeURIComponent(escapeHtml(email)),
 		});
-		console.log('newSubscriber:', newSubscriber);
 		// if (!newSubscriber.id) res.sendStatus(503);
 		const params = {
 			subject: 'Confirm Your Subscription with HurricaneCast',
 			body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
-      To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
-      http://email.hurricanehunt.com/subscribe/validate?email=${encodeURI(
+To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
+http://email.hurricanehunt.com/subscribe/validate?email=${encodeURIComponent(
 				newSubscriber.email,
 			)}
       \n
-      You can unsubscribe at anytime by visiting http://email.hurricanehunt.com/subscribe to manage your preferences.`,
+You can unsubscribe at anytime by visiting http://email.hurricanehunt.com/subscribe to manage your preferences.`,
 			recipients: [newSubscriber.email],
 		};
-		console.log('add params:', params);
 		const { wasSuccessful = false } = await sendEmail(params);
 		if (wasSuccessful) res.sendStatus(201);
 		else res.sendStatus(403);
@@ -42,11 +39,10 @@ async function validateSubscriber(req, res) {
 		);
 	}
 	const validSubscriber = await Subscriber.validateSusbscriberByEmail(
-		decodeURI(email),
+		decodeURIComponent(email),
 	);
 	if (!validSubscriber.id) res.sendStatus(503);
-
-	res.redirect('https://hurricanehunt.com');
+	else res.redirect('https://hurricanehunt.com');
 }
 
 async function removeSubscriber(req, res) {
