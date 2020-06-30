@@ -13,8 +13,8 @@ subscriberRouter.post('*', (req, res, next) => {
 	next();
 });
 
-subscriberRouter.post('add', addSubscriber);
-subscriberRouter.post('remove', removeSubscriber);
-subscriberRouter.get('validate', validateSubscriber);
+subscriberRouter.post('/add', addSubscriber);
+subscriberRouter.post('/remove', removeSubscriber);
+subscriberRouter.get('/validate', validateSubscriber);
 
 module.exports = subscriberRouter;
