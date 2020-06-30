@@ -5,7 +5,10 @@ const sendEmail = require('../models/ses');
 async function addSubscriber(req, res) {
 	try {
 		const { email } = req.body;
-		const newSubscriber = await Subscriber.add({ email: escapeHtml(email) });
+		console.log(email);
+		const newSubscriber = await Subscriber.add({
+			email: decodeURI(escapeHtml(email)),
+		});
 		if (!newSubscriber.id) res.sendStatus(503);
 		const params = {
 			subject: 'Confirm Your Subscription with HurricaneCast',
