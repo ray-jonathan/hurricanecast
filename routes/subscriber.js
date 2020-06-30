@@ -8,10 +8,11 @@ const {
 } = require('../controllers/subscriber');
 
 //Logging
-subscriberRouter.use((req, res, next) => {
-	console.log('subscriberRouter:', req.path, req.method, '\n');
+subscriberRouter.post('*', (req, res, next) => {
+	console.log('made it to the subscriberRouter');
 	next();
 });
+
 subscriberRouter.post('add', addSubscriber);
 subscriberRouter.post('remove', removeSubscriber);
 subscriberRouter.get('validate', validateSubscriber);
