@@ -9,6 +9,7 @@ async function addSubscriber(req, res) {
 		const newSubscriber = await Subscriber.add({
 			email: decodeURIComponent(escapeHtml(email)),
 		});
+		console.log('newSubscriber:', newSubscriber);
 		// if (!newSubscriber.id) res.sendStatus(503);
 		const params = {
 			subject: 'Confirm Your Subscription with HurricaneCast',
