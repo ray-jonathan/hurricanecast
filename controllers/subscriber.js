@@ -13,11 +13,11 @@ async function addSubscriber(req, res) {
 			subject: 'Confirm Your Subscription with HurricaneCast',
 			body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
 To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
-http://email.hurricanehunt.com/subscribe/validate?email=${encodeURIComponent(
+http://email.hurricanecast.com/subscribe/validate?email=${encodeURIComponent(
 				newSubscriber.email,
 			)}
       \n
-You can unsubscribe at anytime by visiting http://email.hurricanehunt.com/subscribe to manage your preferences.`,
+You can unsubscribe at anytime by visiting http://email.hurricanecast.com/subscribe to manage your preferences.`,
 			recipients: [newSubscriber.email],
 		};
 		const { wasSuccessful = false } = await sendEmail(params);
