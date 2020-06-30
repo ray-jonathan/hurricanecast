@@ -8,6 +8,7 @@ class Subscriber {
 	}
 
 	static async add({ email = '', validated = false }) {
+		console.log('subscriber add email was supplied', email);
 		if (!email) return new Subscriber();
 		try {
 			const {
@@ -23,7 +24,7 @@ class Subscriber {
 			);
 			return new Subscriber(id, subscriberEmail, subscriberValiation);
 		} catch (err) {
-			console.log(err);
+			console.log('Error with Subscriber.add():', err);
 			return new Subscriber();
 		}
 	}
