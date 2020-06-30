@@ -22,6 +22,7 @@ async function addSubscriber(req, res) {
       You can unsubscribe at anytime by visiting http://email.hurricanehunt.com/subscribe to manage your preferences.`,
 			recipients: [newSubscriber.email],
 		};
+		console.log('add params:', params);
 		const { wasSuccessful = false } = await sendEmail(params);
 		if (wasSuccessful) res.sendStatus(201);
 		else res.sendStatus(403);
