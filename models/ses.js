@@ -15,7 +15,7 @@ async function sendEmail({
 		const charset = 'UTF-8';
 
 		const emailResults = await Promise.allSettled(
-			recipients.map(({ email }) => {
+			recipients.map((email) => {
 				var params = {
 					Source: SENDER,
 					ReplyToAddresses: [REPLY_TO],
