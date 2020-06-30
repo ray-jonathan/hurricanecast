@@ -26,7 +26,7 @@ const forecastRouter = require('./routes/forecast');
 
 // Routes
 app.post('/subscribe', subscriberRouter);
-app.get('/subscribe/validate', subscriberRouter);
+app.get('/subscribe', subscriberRouter);
 app.post('/send-forecast', forecastRouter);
 
 app.get('/', (req, res) =>
