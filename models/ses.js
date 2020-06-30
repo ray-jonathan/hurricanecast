@@ -43,6 +43,7 @@ async function sendEmail({
 				ses.sendEmail(params, function (err, data) {
 					if (err) {
 						console.log(err.message, ` || Tried to send to ${email}`);
+						console.log('Here were the params used: \n', params, '\n');
 						Promise.reject();
 					} else {
 						console.log('Email sent! Message ID: ', data.MessageId);
