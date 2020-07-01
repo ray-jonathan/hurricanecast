@@ -26,13 +26,13 @@ async function addSubscriber(req, res) {
 					recipients: [newSubscriber.email],
 				};
 				const { wasSuccessful = false } = await sendEmail(params);
-			}
+				res.sendStatus(wasSuccessful ? 202 : 400);
+			} else res.sendStatus(400);
 			// res.redirect('https://hurricanecast.com/');
-		}
-		res.sendStatus(205);
+		} else res.sendStatus(400);
 	} catch (err) {
 		console.log(err);
-		res.sendStatus(203);
+		res.sendStatus(400);
 	}
 }
 
