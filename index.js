@@ -5,6 +5,8 @@ const express = require('express');
 const app = express();
 const es6Renderer = require('express-es6-template-engine');
 const helmet = require('helmet');
+const cors = require('cors');
+app.use(cors());
 app.use(helmet());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
