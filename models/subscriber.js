@@ -61,7 +61,7 @@ class Subscriber {
 		}
 	}
 
-	static async getAllValidatedSubscribers() {
+	async getAllValidatedSubscribers() {
 		try {
 			const subscriberArray = await db.any(
 				`select * from subscribers where validated = true`,
@@ -84,7 +84,7 @@ class Subscriber {
 		}
 	}
 
-	static async getMostRecentSubscriber() {
+	async getMostRecentSubscriber() {
 		try {
 			const {
 				id,
@@ -93,6 +93,23 @@ class Subscriber {
 			} = await db.one(
 				`select * from subscribers order by id desc limit 1 where validated = false`,
 			);
+			return new Subscriber(id, subscriberEmail, subscriberValiation);
+		} catch (err) {
+			console.log(err);
+			return new Subscriber();
+		}
+	}
+
+	async getSubscriberByEmail(emailAddress = '') {
+		if (!emailAddress) return new Subscriber();
+		try {
+			const {
+				id,
+				email: subscriberEmail,
+				validated: subscriberValiation,
+			} = await db.one(`select * from subscribers where email = $1`, [
+				emailAddress,
+			]);
 			return new Subscriber(id, subscriberEmail, subscriberValiation);
 		} catch (err) {
 			console.log(err);

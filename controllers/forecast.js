@@ -45,19 +45,24 @@ If you wish to unsubscribe from these forecasts and all future correspondence, p
 }
 
 async function sendForecast(req, res) {
-	try {
-		const recipients = await Subscriber.getAllValidatedSubscribers();
-		console.log(recipients);
-		const { subject, body } = res.addedForecast;
-		const { wasSuccessful } = await sendEmail({
-			subject,
-			body_text: body,
-			recipients,
-		});
-		res.sendStatus(wasSuccessful === true ? 204 : 503);
-	} catch (err) {
-		console.log(err);
+	if (!res.addedForecast.id) {
+		console.log('Error with added forecast.');
 		res.sendStatus(503);
+	} else {
+		try {
+			const recipients = await Subscriber.getAllValidatedSubscribers();
+			console.log(recipients);
+			const { subject, body } = res.addedForecast;
+			const { wasSuccessful } = await sendEmail({
+				subject,
+				body_text: body,
+				recipients,
+			});
+			res.redirect('https://hurricanecast.com');
+		} catch (err) {
+			console.log(err);
+			res.sendStatus(503);
+		}
 	}
 }
 
