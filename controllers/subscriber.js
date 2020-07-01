@@ -8,7 +8,8 @@ async function addSubscriber(req, res) {
 		const existingSubscriber = await Subscriber.getSubscriberByEmail(
 			decodeURIComponent(email),
 		);
-		if (!existingSubscriber.id) {
+		console.log(existingSubscriber);
+		if (!existingSubscriber.email) {
 			const newSubscriber = await Subscriber.add({
 				email: decodeURIComponent(escapeHtml(email)),
 			});
