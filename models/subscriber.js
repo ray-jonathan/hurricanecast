@@ -61,7 +61,7 @@ class Subscriber {
 		}
 	}
 
-	async getAllValidatedSubscribers() {
+	static async getAllValidatedSubscribers() {
 		try {
 			const subscriberArray = await db.any(
 				`select * from subscribers where validated = true`,
@@ -84,7 +84,7 @@ class Subscriber {
 		}
 	}
 
-	async getMostRecentSubscriber() {
+	static async getMostRecentSubscriber() {
 		try {
 			const {
 				id,
@@ -100,7 +100,7 @@ class Subscriber {
 		}
 	}
 
-	async getSubscriberByEmail(emailAddress = '') {
+	static async getSubscriberByEmail(emailAddress = '') {
 		if (!emailAddress) return new Subscriber();
 		try {
 			const {
