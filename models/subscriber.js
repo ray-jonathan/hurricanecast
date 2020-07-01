@@ -91,7 +91,7 @@ class Subscriber {
 				email: subscriberEmail,
 				validated: subscriberValiation,
 			} = await db.one(
-				`select * from subscribers order by id desc limit 1 where validated = false`,
+				`select * from subscribers where validated = false order by id desc limit 1;`,
 			);
 			return new Subscriber(id, subscriberEmail, subscriberValiation);
 		} catch (err) {
@@ -103,11 +103,14 @@ class Subscriber {
 	static async getSubscriberByEmail(emailAddress = '') {
 		if (!emailAddress) return new Subscriber();
 		try {
-			const subscriber = await db.one(
-				`select * from subscribers where email = $1`,
-				[emailAddress],
-			);
-			return new Subscriber(...subscriber);
+			const {
+				id,
+				email,
+				validated,
+			} = await db.one(`select * from subscribers where email = $1`, [
+				emailAddress,
+			]);
+			return new Subscriber(id, email, validated);
 		} catch (err) {
 			console.log(err);
 			return new Subscriber();
