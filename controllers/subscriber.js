@@ -5,30 +5,33 @@ const sendEmail = require('../models/ses');
 async function addSubscriber(req, res) {
 	try {
 		const { email } = req.body;
-		const existingSubscriber = await Subscriber.getSubscriberByEmail(
-			decodeURIComponent(email),
-		);
-		console.log(existingSubscriber);
-		if (!existingSubscriber.email) {
-			const newSubscriber = await Subscriber.add({
-				email: decodeURIComponent(escapeHtml(email)),
-			});
-			if (!!newSubscriber.id) {
-				const params = {
-					subject: 'Confirm Your Subscription with HurricaneCast',
-					body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
-		To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
-		https://email.hurricanecast.com/subscribe/add?email=${encodeURIComponent(
-			newSubscriber.email,
-		)}
-					\n
-		You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe to manage your preferences.`,
-					recipients: [newSubscriber.email],
-				};
-				const { wasSuccessful = false } = await sendEmail(params);
-				res.sendStatus(wasSuccessful ? 202 : 400);
+		console.log('body:: ', req.body);
+		if (!!email) {
+			const existingSubscriber = await Subscriber.getSubscriberByEmail(
+				decodeURIComponent(email),
+			);
+			console.log(existingSubscriber);
+			if (!existingSubscriber.email) {
+				const newSubscriber = await Subscriber.add({
+					email: decodeURIComponent(escapeHtml(email)),
+				});
+				if (!!newSubscriber.id) {
+					const params = {
+						subject: 'Confirm Your Subscription with HurricaneCast',
+						body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
+			To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
+			https://email.hurricanecast.com/subscribe/add?email=${encodeURIComponent(
+				newSubscriber.email,
+			)}
+						\n
+			You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe to manage your preferences.`,
+						recipients: [newSubscriber.email],
+					};
+					const { wasSuccessful = false } = await sendEmail(params);
+					res.sendStatus(wasSuccessful ? 202 : 400);
+				} else res.sendStatus(400);
+				// res.redirect('https://hurricanecast.com/');
 			} else res.sendStatus(400);
-			// res.redirect('https://hurricanecast.com/');
 		} else res.sendStatus(400);
 	} catch (err) {
 		console.log(err);
