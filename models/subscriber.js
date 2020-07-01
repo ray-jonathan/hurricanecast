@@ -103,14 +103,11 @@ class Subscriber {
 	static async getSubscriberByEmail(emailAddress = '') {
 		if (!emailAddress) return new Subscriber();
 		try {
-			const {
-				id,
-				email: subscriberEmail,
-				validated: subscriberValiation,
-			} = await db.one(`select * from subscribers where email = $1`, [
-				emailAddress,
-			]);
-			return new Subscriber(id, subscriberEmail, subscriberValiation);
+			const subscriber = await db.any(
+				`select * from subscribers where email = $1`,
+				[emailAddress],
+			)[0];
+			return new Subscriber(...subscriber);
 		} catch (err) {
 			console.log(err);
 			return new Subscriber();
