@@ -5,10 +5,12 @@ const {
 	addSubscriber,
 	validateSubscriber,
 	removeSubscriber,
+	requestRemoveSubscriber,
 } = require('../controllers/subscriber');
 
-subscriberRouter.post('/add', addSubscriber);
-subscriberRouter.post('/remove', removeSubscriber);
-subscriberRouter.get('/validate', validateSubscriber);
+subscriberRouter.post('/request-add', addSubscriber);
+subscriberRouter.get('/add', validateSubscriber);
+subscriberRouter.post('/request-remove', requestRemoveSubscriber);
+subscriberRouter.get('/remove', removeSubscriber);
 
 module.exports = subscriberRouter;

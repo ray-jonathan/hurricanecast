@@ -13,7 +13,7 @@ async function addSubscriber(req, res) {
 			subject: 'Confirm Your Subscription with HurricaneCast',
 			body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
 To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
-https://email.hurricanecast.com/subscribe/validate?email=${encodeURIComponent(
+https://email.hurricanecast.com/subscribe/add?email=${encodeURIComponent(
 				newSubscriber.email,
 			)}
       \n
@@ -47,10 +47,35 @@ async function validateSubscriber(req, res) {
 
 async function removeSubscriber(req, res) {
 	try {
-		const { email } = req.body;
+		const { email } = req.query;
 		const whateverComesBackFromDBNone = await Subscriber.deleteSusbscriberByEmail(
 			decodeURIComponent(email),
 		);
+		console.log(email, ':', whateverComesBackFromDBNone);
+	} catch (err) {
+		console.log(err, 'The offending email was:', req.body.email);
+	}
+	res.redirect('https://hurricanecast.com');
+}
+
+async function requestRemoveSubscriber(req, res) {
+	try {
+		const { email } = req.body;
+		const params = {
+			subject: 'Confirm Your Unsubscription with HurricaneCast',
+			body_text: `You are receiving this email because a request was submitted to have this email removed from the distribution list.
+To complete this process. please follow this link:
+https://email.hurricanecast.com/subscribe/remove?email=${encodeURIComponent(
+				email,
+			)}
+      \n
+If you received this email and you do not want to be removed from the distribution, you may safely ignore this email.`,
+			recipients: [email],
+		};
+		const { wasSuccessful = false } = await sendEmail(params);
+		if (wasSuccessful) res.sendStatus(201);
+		else res.sendStatus(403);
+
 		res.sendStatus(204);
 	} catch (err) {
 		console.log(err, 'The offending email was:', req.body.email);
@@ -62,4 +87,5 @@ module.exports = {
 	addSubscriber,
 	validateSubscriber,
 	removeSubscriber,
+	requestRemoveSubscriber,
 };
