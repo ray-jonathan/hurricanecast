@@ -103,10 +103,10 @@ class Subscriber {
 	static async getSubscriberByEmail(emailAddress = '') {
 		if (!emailAddress) return new Subscriber();
 		try {
-			const subscriber = await db.any(
+			const subscriber = await db.one(
 				`select * from subscribers where email = $1`,
 				[emailAddress],
-			)[0];
+			);
 			return new Subscriber(...subscriber);
 		} catch (err) {
 			console.log(err);
