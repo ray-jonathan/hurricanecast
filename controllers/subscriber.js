@@ -5,24 +5,29 @@ const sendEmail = require('../models/ses');
 async function addSubscriber(req, res) {
 	try {
 		const { email } = req.body;
-		const newSubscriber = await Subscriber.add({
-			email: decodeURIComponent(escapeHtml(email)),
-		});
-		if (!!newSubscriber.id) {
-			const params = {
-				subject: 'Confirm Your Subscription with HurricaneCast',
-				body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
-	To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
-	https://email.hurricanecast.com/subscribe/add?email=${encodeURIComponent(
-		newSubscriber.email,
-	)}
-				\n
-	You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe to manage your preferences.`,
-				recipients: [newSubscriber.email],
-			};
-			const { wasSuccessful = false } = await sendEmail(params);
+		const existingSubscriber = await Subscriber.getSubscriberByEmail(
+			decodeURIComponent(email),
+		);
+		if (!existingSubscriber.id) {
+			const newSubscriber = await Subscriber.add({
+				email: decodeURIComponent(escapeHtml(email)),
+			});
+			if (!!newSubscriber.id) {
+				const params = {
+					subject: 'Confirm Your Subscription with HurricaneCast',
+					body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
+		To ensure we only send forecasts to those wanting them, please click the following link to confirm your subscription:
+		https://email.hurricanecast.com/subscribe/add?email=${encodeURIComponent(
+			newSubscriber.email,
+		)}
+					\n
+		You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe to manage your preferences.`,
+					recipients: [newSubscriber.email],
+				};
+				const { wasSuccessful = false } = await sendEmail(params);
+			}
+			// res.redirect('https://hurricanecast.com/');
 		}
-		// res.redirect('https://hurricanecast.com/');
 		res.sendStatus(205);
 	} catch (err) {
 		console.log(err);
