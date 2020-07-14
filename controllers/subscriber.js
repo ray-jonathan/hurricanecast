@@ -79,6 +79,12 @@ async function removeSubscriber(req, res) {
 
 async function requestRemoveSubscriber(req, res) {
 	try {
+		/*
+		
+		Need to add check if user is even in table- if not, need to communicate that back to front end and not send an unneeded email.
+
+		*/
+
 		const { email } = req.body;
 		const params = {
 			subject: 'Confirm Your Unsubscription with HurricaneCast',
@@ -92,11 +98,12 @@ If you received this email and you do not want to be removed from the distributi
 			recipients: [email],
 		};
 		const { wasSuccessful = false } = await sendEmail(params);
+		res.sendStatus(wasSuccessful ? 202 : 400);
 	} catch (err) {
 		console.log(err, 'The offending email was:', req.body.email);
+		res.sendStatus(400);
 	}
 	// res.redirect('https://hurricanecast.com');
-	res.sendStatus(205);
 }
 
 module.exports = {

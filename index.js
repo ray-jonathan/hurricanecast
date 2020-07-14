@@ -31,6 +31,13 @@ const forecastRouter = require('./routes/forecast');
 app.use('/subscribe', subscriberRouter);
 app.use('/send-forecast', forecastRouter);
 
+// Testing for AWS SNS
+app.post('/notification', (req, res) => {
+	console.log('\nNew SNS:');
+	console.log(req.body);
+	res.sendStatus(200);
+});
+
 app.get('/', (req, res) =>
 	res.render('index.html', {
 		partials: {
