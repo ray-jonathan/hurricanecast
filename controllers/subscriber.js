@@ -108,10 +108,24 @@ If you received this email and you do not want to be removed from the distributi
 
 async function handleBouncedEmail(req, res) {
 	try {
-		console.log(req, req.body);
+		const [email] = req.body.mail.destination;
+		const theSubscriber = await Subscriber.getSubscriberByEmail(
+			decodeURIComponent(email),
+		);
+		if (!!theSubscriber.id) {
+			const {
+				bool: didRemoveSubscriber,
+			} = await Subscriber.deleteSusbscriberByEmail(theSubscriber.email);
+			console.log(
+				`${decodeURIComponent(email)} ${
+					didRemoveSubscriber ? 'was' : 'was not'
+				} removed from the distribution list.`,
+			);
+		}
 	} catch (err) {
-		console.log(err);
+		console.log(err, '\n\nREQ.BODY FOR DEBUGGING\n', req.body);
 	}
+
 	res.sendStatus(201); // update this code to more appropriate
 }
 
