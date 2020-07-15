@@ -8,6 +8,15 @@ const helmet = require('helmet');
 const cors = require('cors');
 app.use(cors());
 app.use(helmet());
+
+// Reasssign SNS Update Content Type
+app.use(function (req, res, next) {
+	if (req.get('x-amz-sns-message-type')) {
+		req.headers['content-type'] = 'application/json';
+	}
+	next();
+});
+
 app.use(express.json());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -30,13 +39,7 @@ const forecastRouter = require('./routes/forecast');
 // Routes
 app.use('/subscribe', subscriberRouter);
 app.use('/send-forecast', forecastRouter);
-
-// Testing for AWS SNS
-app.post('/notification', (req, res) => {
-	console.log('\nNew SNS:');
-	console.log(req.body);
-	res.sendStatus(200);
-});
+app.use('/notification', subscriberRouter);
 
 app.get('/', (req, res) =>
 	res.render('index.html', {

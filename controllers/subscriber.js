@@ -106,9 +106,19 @@ If you received this email and you do not want to be removed from the distributi
 	// res.redirect('https://hurricanecast.com');
 }
 
+async function handleBouncedEmail(req, res) {
+	try {
+		console.log(req, req.body);
+	} catch (err) {
+		console.log(err);
+	}
+	res.sendStatus(201); // update this code to more appropriate
+}
+
 module.exports = {
 	addSubscriber,
 	validateSubscriber,
 	removeSubscriber,
 	requestRemoveSubscriber,
+	handleBouncedEmail,
 };
