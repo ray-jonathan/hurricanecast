@@ -50,8 +50,9 @@ async function sendForecast(req, res) {
 		res.sendStatus(503);
 	} else {
 		try {
-			const recipients = await Subscriber.getAllValidatedSubscribers();
-			console.log(recipients);
+			const recipientsObjects = await Subscriber.getAllValidatedSubscribers();
+			console.log(recipientsObjects);
+			const recipients = recipientsObjects.map(({ email }) => email);
 			const { subject, body } = res.addedForecast;
 			const { wasSuccessful } = await sendEmail({
 				subject,
