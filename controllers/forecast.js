@@ -32,7 +32,7 @@ If you want to help support these efforts, there is information how you can help
 		: ''
 }
 SUBSCRIPTIONS: 
-If you wish to unsubscribe from these forecasts and all future correspondence, please visit https://hurricanecast.com/subscribe and supply your email address to the unsubscription form.
+If you wish to subscribe or unsubscribe from these forecasts and all future correspondence, please visit https://hurricanecast.com/subscribe and supply your email address to the corresponding form.
 `;
 	const addedForecast = await Forecast.add({ subject, body: body_text });
 	if (!addedForecast.id) {
