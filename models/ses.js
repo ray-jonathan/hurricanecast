@@ -2,6 +2,8 @@
 const aws = require('aws-sdk');
 aws.config.loadFromPath('../config.json');
 const ses = new aws.SES();
+var RateLimiter = require('limiter').RateLimiter;
+var limiter = new RateLimiter(12, 'second');
 
 async function sendEmail({
 	subject = 'HurricaneCast Update',
@@ -54,33 +56,36 @@ async function sendEmail({
 
 		emailResults.forEach((promise, i) => {
 			if (promise !== 'rejected') return;
-			ses.sendEmail({
-				Source: SENDER,
-				ReplyToAddresses: [REPLY_TO],
-				Destination: {
-					ToAddresses: [REPLY_TO, ADMIN_EMAIL],
-				},
-				Message: {
-					Subject: {
-						Data: 'EMAIL SERVICE FAILURE',
-						Charset: charset,
+			// Throttle requests
+			limiter.removeTokens(1, function (err, remainingRequests) {
+				ses.sendEmail({
+					Source: SENDER,
+					ReplyToAddresses: [REPLY_TO],
+					Destination: {
+						ToAddresses: [REPLY_TO, ADMIN_EMAIL],
 					},
-					Body: {
-						Text: {
-							Data: `There was an error sending a forecase to the following email address: ${recipients[i].email}. \nPlease reach out to the subscriber or manually remove them from the list to prevent further emails indicating errors.`,
+					Message: {
+						Subject: {
+							Data: 'EMAIL SERVICE FAILURE',
 							Charset: charset,
 						},
+						Body: {
+							Text: {
+								Data: `There was an error sending a forecase to the following email address: ${recipients[i].email}. \nPlease reach out to the subscriber or manually remove them from the list to prevent further emails indicating errors.`,
+								Charset: charset,
+							},
+						},
 					},
-				},
-				function(err, data) {
-					if (err) {
-						console.log(err.message);
-					} else {
-						console.log('Email sent! Message ID: ', data.MessageId);
-					}
-				},
+					function(err, data) {
+						if (err) {
+							console.log(err.message);
+						} else {
+							console.log('Email sent! Message ID: ', data.MessageId);
+						}
+					},
+				});
+				return;
 			});
-			return;
 		});
 
 		return { wasSuccessful: true };
