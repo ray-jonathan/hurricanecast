@@ -4,6 +4,7 @@ aws.config.loadFromPath('../config.json');
 const ses = new aws.SES();
 var RateLimiter = require('limiter').RateLimiter;
 var limiter = new RateLimiter(12, 'second');
+const fs = require('fs');
 
 async function sendEmail({
 	subject = 'HurricaneCast Update',
@@ -41,19 +42,28 @@ async function sendEmail({
 						},
 					},
 				};
-
-				ses.sendEmail(params, function (err, data) {
-					if (err) {
-						console.log(err.message, ` || Tried to send to ${email}`);
-						Promise.reject();
-					} else {
-						console.log('Email sent! Message ID: ', data.MessageId);
-						Promise.resolve();
-					}
+				limiter.removeTokens(1, function (err, remainingRequests) {
+					var prom;
+					ses.sendEmail(params, function (err, data) {
+						if (err) {
+							console.log(err.message, ` || Tried to send to ${email}`);
+							fs.appendFile('tryagain.txt', `${email};`, function (err) {
+								if (err)
+									console.log(`problem storing ${email} to external file!`);
+								console.log('Saved!');
+							});
+							prom = Promise.reject();
+						} else {
+							console.log('Email sent! Message ID: ', data.MessageId);
+							prom = Promise.resolve();
+						}
+					});
+					return prom;
 				});
 			}),
 		);
 
+		// Emails About Errors
 		emailResults.forEach((promise, i) => {
 			if (promise !== 'rejected') return;
 			// Throttle requests
