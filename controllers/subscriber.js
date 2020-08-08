@@ -31,10 +31,17 @@ You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe t
 				} else res.sendStatus(400);
 				// res.redirect('https://hurricanecast.com/');
 			} else res.sendStatus(400);
-		} else res.sendStatus(400);
+		} else
+			res
+				.status(409)
+				.json({ msg: 'Please provide a valid email in this input.' });
 	} catch (err) {
 		console.log(err);
-		res.sendStatus(400);
+		res
+			.status(401)
+			.json({
+				msg: 'There has been an error. Please refresh the page and try again.',
+			});
 	}
 }
 
