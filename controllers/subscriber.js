@@ -27,21 +27,38 @@ You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe t
 						recipients: [newSubscriber.email],
 					};
 					const { wasSuccessful = false } = await sendEmail(params);
+					if (wasSuccessful) {
+						res.status(200).json({
+							msg:
+								'An validation email has been sent to the provided address. Please check your spam folder if you still have not received it.',
+						});
+					} else throw new Error();
 					res.sendStatus(wasSuccessful ? 202 : 400);
-				} else res.sendStatus(400);
-				// res.redirect('https://hurricanecast.com/');
-			} else res.sendStatus(400);
+				} else throw new Error();
+			} else if (
+				existingSubscriber.validated === 'true' ||
+				existingSubscriber.validated === true
+			)
+				res
+					.status(200)
+					.json({ msg: 'This email address is already subscribed.' });
+			else if (
+				existingSubscriber.validated === 'false' ||
+				existingSubscriber.validated === false
+			)
+				res.status(200).json({
+					msg:
+						'An validation email has been sent to this address already. Please check your spam folder if you still have not received it.',
+				});
 		} else
 			res
 				.status(409)
 				.json({ msg: 'Please provide a valid email in this input.' });
 	} catch (err) {
 		console.log(err);
-		res
-			.status(401)
-			.json({
-				msg: 'There has been an error. Please refresh the page and try again.',
-			});
+		res.status(401).json({
+			msg: 'There has been an error. Please refresh the page and try again.',
+		});
 	}
 }
 

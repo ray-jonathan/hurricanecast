@@ -1,7 +1,7 @@
 const db = require('./db.js');
 
 class Subscriber {
-	constructor(id = null, email = '', validated = '') {
+	constructor(id = null, email = '', validated = false) {
 		this.id = id;
 		this.email = email;
 		this.validated = validated;
