@@ -15,7 +15,7 @@ async function addSubscriber(req, res) {
 				const newSubscriber = await Subscriber.add({
 					email: decodeURIComponent(escapeHtml(email)),
 				});
-				if (!!newSubscriber.id) {
+				if (!!newSubscriber.id && newSubscriber.id !== 'null') {
 					const params = {
 						subject: 'Confirm Your Subscription with HurricaneCast',
 						body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
@@ -30,10 +30,9 @@ You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe t
 					if (wasSuccessful) {
 						res.status(200).json({
 							msg:
-								'An validation email has been sent to the provided address. Please check your spam folder if you still have not received it.',
+								'A validation email has been sent to the provided address. Please check your spam folder if you still have not received it.',
 						});
 					} else throw new Error();
-					res.sendStatus(wasSuccessful ? 202 : 400);
 				} else throw new Error();
 			} else if (
 				existingSubscriber.validated === 'true' ||
