@@ -109,6 +109,22 @@ async function requestRemoveSubscriber(req, res) {
 		*/
 
 		const { email } = req.body;
+		if (!email) {
+			res
+				.status(409)
+				.json({ msg: 'Please provide a valid email in this input.' });
+			return false;
+		}
+		const existingSubscriber = await Subscriber.getSubscriberByEmail(
+			decodeURIComponent(email),
+		);
+		console.log(existingSubscriber);
+		if (!existingSubscriber.email) {
+			res
+				.status(409)
+				.json({ msg: 'This email is not subscribed to these forecasts.' });
+			return false;
+		}
 		const params = {
 			subject: 'Confirm Your Unsubscription with HurricaneCast',
 			body_text: `You are receiving this email because a request was submitted to have this email removed from the distribution list.
@@ -121,10 +137,17 @@ If you received this email and you do not want to be removed from the distributi
 			recipients: [email],
 		};
 		const { wasSuccessful = false } = await sendEmail(params);
-		res.sendStatus(wasSuccessful ? 202 : 400);
+		if (wasSuccessful) {
+			res.status(200).json({
+				msg:
+					'A validation email has been sent to the provided address. Please check your spam folder if you still have not received it.',
+			});
+		} else throw new Error();
 	} catch (err) {
 		console.log(err, 'The offending email was:', req.body.email);
-		res.sendStatus(400);
+		res.status(401).json({
+			msg: 'There has been an error. Please refresh the page and try again.',
+		});
 	}
 	// res.redirect('https://hurricanecast.com');
 }
