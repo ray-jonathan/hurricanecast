@@ -127,7 +127,6 @@ class Subscriber {
 			]);
 			return new Subscriber(id, email, validated);
 		} catch (err) {
-			console.log('Error with Subscriber.getSubscriberByEmail():', err);
 			return new Subscriber();
 		}
 	}
