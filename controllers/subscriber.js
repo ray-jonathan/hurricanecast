@@ -5,12 +5,10 @@ const sendEmail = require('../models/ses');
 async function addSubscriber(req, res) {
 	try {
 		const { email } = req.body;
-		console.log('body:: ', req.body);
 		if (!!email) {
 			const existingSubscriber = await Subscriber.getSubscriberByEmail(
 				decodeURIComponent(email),
 			);
-			console.log(existingSubscriber);
 			if (!existingSubscriber.email) {
 				const newSubscriber = await Subscriber.add({
 					email: decodeURIComponent(escapeHtml(email)),
@@ -27,34 +25,41 @@ You can unsubscribe at anytime by visiting https://hurricanecast.com/subscribe t
 						recipients: [newSubscriber.email],
 					};
 					const { wasSuccessful = false } = await sendEmail(params);
+					console.log(
+						`${newSubscriber.email} has requested to join the subscribers list.`,
+					);
 					if (wasSuccessful) {
 						res.status(200).json({
 							msg:
 								'A validation email has been sent to the provided address. Please check your spam folder if you still have not received it.',
 						});
+						return;
 					} else throw new Error();
 				} else throw new Error();
 			} else if (
 				existingSubscriber.validated === 'true' ||
 				existingSubscriber.validated === true
-			)
+			) {
 				res
 					.status(200)
 					.json({ msg: 'This email address is already subscribed.' });
-			else if (
+				return;
+			} else if (
 				existingSubscriber.validated === 'false' ||
 				existingSubscriber.validated === false
-			)
+			) {
 				res.status(200).json({
 					msg:
 						'An validation email has been sent to this address already. Please check your spam folder if you still have not received it.',
 				});
+				return;
+			}
 		} else
 			res
 				.status(409)
 				.json({ msg: 'Please provide a valid email in this input.' });
 	} catch (err) {
-		console.log(err);
+		console.log('Error signing up', req.body.email, 'for emails.\n', err);
 		res.status(401).json({
 			msg: 'There has been an error. Please refresh the page and try again.',
 		});
@@ -66,16 +71,24 @@ async function validateSubscriber(req, res) {
 	const theSubscriber = await Subscriber.getSubscriberByEmail(
 		decodeURIComponent(email),
 	);
+	let validSubscriber;
 	if (!!theSubscriber.id) {
-		await Subscriber.validateSusbscriberByEmail(theSubscriber.email);
+		if (!theSubscriber.validated) {
+			validSubscriber = await Subscriber.validateSusbscriberByEmail(
+				theSubscriber.email,
+			);
+		}
 	} else {
 		const { email: culpritEmail } = await Subscriber.getMostRecentSubscriber();
 		console.log(
-			'Unable to validate subscriber. The most likely culprit is ' +
-				culpritEmail,
+			`Unable to validate subscriber. The most likely culprit is  ${culpritEmail}. The attempted validation email in the query string was ${decodeURIComponent(
+				email,
+			)}`,
 		);
 	}
-	res.redirect('https://hurricanecast.com');
+	res.redirect(
+		`https://hurricanecast.com/?success=${validSubscriber.validated}`,
+	);
 }
 
 async function removeSubscriber(req, res) {
@@ -85,7 +98,7 @@ async function removeSubscriber(req, res) {
 			decodeURIComponent(email),
 		);
 		if (!!theSubscriber.id) {
-			const {
+			var {
 				bool: didRemoveSubscriber,
 			} = await Subscriber.deleteSusbscriberByEmail(theSubscriber.email);
 			console.log(
@@ -95,19 +108,13 @@ async function removeSubscriber(req, res) {
 			);
 		}
 	} catch (err) {
-		console.log(err, 'The offending email was:', req.body.email);
+		console.log('\nProblem removing subscriber:', req.body.email, '\n', err);
 	}
-	res.redirect('https://hurricanecast.com');
+	res.redirect(`https://hurricanecast.com/?success=${didRemoveSubscriber}`);
 }
 
 async function requestRemoveSubscriber(req, res) {
 	try {
-		/*
-		
-		Need to add check if user is even in table- if not, need to communicate that back to front end and not send an unneeded email.
-
-		*/
-
 		const { email } = req.body;
 		if (!email) {
 			res
@@ -118,7 +125,6 @@ async function requestRemoveSubscriber(req, res) {
 		const existingSubscriber = await Subscriber.getSubscriberByEmail(
 			decodeURIComponent(email),
 		);
-		console.log(existingSubscriber);
 		if (!existingSubscriber.email) {
 			res
 				.status(409)
@@ -144,7 +150,11 @@ If you received this email and you do not want to be removed from the distributi
 			});
 		} else throw new Error();
 	} catch (err) {
-		console.log(err, 'The offending email was:', req.body.email);
+		console.log(
+			err,
+			'FAILED REMOVE REQUEST ATTEMPT.\nThe offending email was:',
+			req.body.email,
+		);
 		res.status(401).json({
 			msg: 'There has been an error. Please refresh the page and try again.',
 		});
@@ -169,7 +179,11 @@ async function handleBouncedEmail(req, res) {
 			);
 		}
 	} catch (err) {
-		console.log(err, '\n\nREQ.BODY FOR DEBUGGING\n', req.body);
+		console.log(
+			err,
+			'\n\nBAD DEBOUNCE ATTEMPT\nREQ.BODY FOR DEBUGGING\n',
+			req.body,
+		);
 	}
 
 	res.sendStatus(201); // update this code to more appropriate

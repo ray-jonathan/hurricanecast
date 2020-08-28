@@ -36,9 +36,14 @@ If you wish to subscribe or unsubscribe from these forecasts and all future corr
 `;
 	const addedForecast = await Forecast.add({ subject, body: body_text });
 	if (!addedForecast.id) {
-		console.log('Failed to add forecast to table.');
-		res.status(403);
-		res.send('controllers/addForecast Failure');
+		console.log(
+			'Failed to add forecast to table.',
+			'controllers/addForecast Failure',
+		);
+		res
+			.status(403)
+			.send('Failed to send forecast. Please contact your IT Admin.');
+		return;
 	}
 	res.addedForecast = addedForecast;
 	next();
@@ -46,8 +51,14 @@ If you wish to subscribe or unsubscribe from these forecasts and all future corr
 
 async function sendForecast(req, res) {
 	if (!res.addedForecast.id) {
-		console.log('Error with added forecast.');
-		res.sendStatus(503);
+		console.log(
+			'Failed to add forecast to table.',
+			'controllers/sendForecast Failure',
+		);
+		res
+			.status(403)
+			.send('Failed to send forecast. Please contact your IT Admin.');
+		return;
 	} else {
 		try {
 			const recipientsObjects = await Subscriber.getAllValidatedSubscribers();
@@ -59,9 +70,21 @@ async function sendForecast(req, res) {
 				body_text: body,
 				recipients,
 			});
+			if (wasSuccessful)
+				await sendEmail({
+					subject: `Status of Forecast: ${subject}`,
+					body_text: `Successfully sent ${recipients.length} emails to subscriber list.`,
+					recipients: [`${process.env.REPLY_TO}`],
+				});
+			else
+				await sendEmail({
+					subject: `Error with Forecast: ${subject}`,
+					body_text: `Error sending forecast. Tried to send to ${recipients.length} emails on subscriber list.`,
+					recipients: [`${process.env.ADMIN_EMAIL}`],
+				});
 			res.redirect('https://hurricanecast.com');
 		} catch (err) {
-			console.log(err);
+			console.log('Error with SendForecast\n', err);
 			res.sendStatus(503);
 		}
 	}

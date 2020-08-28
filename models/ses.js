@@ -42,23 +42,27 @@ async function sendEmail({
 						},
 					},
 				};
-				limiter.removeTokens(1, function (err, remainingRequests) {
+				limiter.removeTokens(1, function (rateLimitError, remainingRequests) {
 					var prom;
+					if (!!rateLimitError)
+						console.log('Error with Rate Limiter,\n', rateLimitError);
 					ses.sendEmail(params, function (err, data) {
 						if (err) {
-							console.log(err.message, ` || Tried to send to ${email}`);
-							fs.appendFile('tryagain.txt', `${email};`, function (err) {
+							console.log(err.message, email);
+							fs.appendFile('rate-limited-emails.txt', `${email};`, function (
+								err,
+							) {
 								if (err)
 									console.log(`problem storing ${email} to external file!`);
-								console.log('Saved!');
+								console.log('CHECK rate-limited-emails.txt FOR UNSENT EMAILS!');
 							});
-							prom = Promise.reject();
+							Promise.reject();
 						} else {
-							console.log('Email sent! Message ID: ', data.MessageId);
-							prom = Promise.resolve();
+							// console.log('Email sent! Message ID: ', data.MessageId);
+							Promise.resolve();
 						}
 					});
-					return prom;
+					return;
 				});
 			}),
 		);

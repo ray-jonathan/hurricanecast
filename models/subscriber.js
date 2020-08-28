@@ -8,7 +8,6 @@ class Subscriber {
 	}
 
 	static async add({ email = '', validated = false }) {
-		console.log('subscriber add email was supplied', email);
 		if (!email) return new Subscriber();
 		try {
 			const {
@@ -41,10 +40,9 @@ class Subscriber {
 				[emailAddress],
 			);
 			const validSubscriber = new Subscriber(id, subscriberEmail, validated);
-			console.log(validSubscriber);
 			return validSubscriber;
 		} catch (err) {
-			console.log(err);
+			console.log('Error with Subscriber.validateSusbscriberByEmail():', err);
 			return new Subscriber();
 		}
 	}
@@ -56,7 +54,7 @@ class Subscriber {
 				email,
 			]);
 		} catch (err) {
-			console.log(err);
+			console.log('Error with Subscriber.deleteSusbscriberByEmail():', err);
 			return new Subscriber();
 		}
 	}
@@ -70,7 +68,21 @@ class Subscriber {
 				({ id, email, validated }) => new Subscriber(id, email, validated),
 			);
 		} catch (err) {
-			console.log(err);
+			console.log('Error with Subscriber.getAllValidatedSubscribers():', err);
+			return [new Subscriber()];
+		}
+	}
+
+	static async getAllUnvalidatedSubscribers() {
+		try {
+			const subscriberArray = await db.any(
+				`select * from subscribers where validated = false`,
+			);
+			return subscriberArray.map(
+				({ id, email, validated }) => new Subscriber(id, email, validated),
+			);
+		} catch (err) {
+			console.log('Error with Subscriber.getAllUnvalidatedSubscribers():', err);
 			return [new Subscriber()];
 		}
 	}
@@ -79,7 +91,10 @@ class Subscriber {
 		try {
 			return db.none(`delete from subscribers where validated = false`);
 		} catch (err) {
-			console.log(err);
+			console.log(
+				'Error with Subscriber.deleteAllUnvalidatedSubscribers():',
+				err,
+			);
 			return undefined;
 		}
 	}
@@ -95,7 +110,7 @@ class Subscriber {
 			);
 			return new Subscriber(id, subscriberEmail, subscriberValiation);
 		} catch (err) {
-			console.log(err);
+			console.log('Error with Subscriber.getMostRecentSubscriber():', err);
 			return new Subscriber();
 		}
 	}
@@ -112,7 +127,7 @@ class Subscriber {
 			]);
 			return new Subscriber(id, email, validated);
 		} catch (err) {
-			console.log(err);
+			console.log('Error with Subscriber.getSubscriberByEmail():', err);
 			return new Subscriber();
 		}
 	}
