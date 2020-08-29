@@ -86,9 +86,11 @@ async function validateSubscriber(req, res) {
 			)}`,
 		);
 	}
-	res.redirect(
-		`https://hurricanecast.com/?success=${validSubscriber.validated}`,
-	);
+	if (!!validSubscriber && !!validSubscriber.validated)
+		res.redirect(
+			`https://hurricanecast.com/?success=${validSubscriber.validated}`,
+		);
+	else res.redirect('https://hurricanecast.com/');
 }
 
 async function removeSubscriber(req, res) {
