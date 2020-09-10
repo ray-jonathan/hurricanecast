@@ -9,7 +9,7 @@ const sendEmail = require('../models/ses');
 	const goodArr = [];
 	const badArr = [];
 	await Promise.allSettled(
-		recipients.forEach(async (email) => {
+		recipients.map(async (email) => {
 			const params = {
 				subject: 'Confirm Your Subscription with HurricaneCast',
 				body_text: `Thank you for expressing interest in receiving emails from HurricaneCast!
@@ -24,9 +24,11 @@ const sendEmail = require('../models/ses');
 			if (wasSuccessful) {
 				goodArr.push(email);
 				Promise.resolve();
+				return true;
 			} else {
 				badArr.push(email);
 				Promise.reject();
+				return false;
 			}
 		}),
 	);
